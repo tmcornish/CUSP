@@ -265,9 +265,10 @@ def plot_map(mp, field, vals_unseen=None, unseen_thresh=None, title='',
     mp: numpy.ndarray or healsparse.HealSparseMap.HealSparseMap
         The map to be displayed.
 
-    field: str
-        name of the HSC field being mapped. Must be either "hectomap",
-        "spring" or "autumn".
+    field: str or tuple[float, float, float, float]
+        Either the name of the HSC field being mapped. Must be either
+        "hectomap", "spring" or "autumn", or a tuple of the form (ra,
+        dec, dra, ddec) specifying the center and dimensions of the view.
 
     vals_unseen: list or None
         List of values to be treated as equivalent to hp.UNSEEN for display
@@ -287,6 +288,17 @@ def plot_map(mp, field, vals_unseen=None, unseen_thresh=None, title='',
     import matplotlib.pyplot as plt
     plt.style.use(styledict)
 
+    # Get the resolution of the map
+    if type(mp) is hsp.HealSparseMap:
+        nside = mp.nside_sparse
+        mp = mp.generate_healpix_map(nest=False)
+    else:
+        nside = hp.npix2nside(len(mp))
+    reso = hp.nside2resol(nside, arcmin=True)
+
+    # Make a copy of the input map to avoid editing in place
+    mp = mp.copy()
+
     # Approximate field centers and corresponding suitable image dimensions
     if field == 'hectomap':
         ra_mean = 231.71
@@ -304,22 +316,14 @@ def plot_map(mp, field, vals_unseen=None, unseen_thresh=None, title='',
         xsize = 2500
         ysize = 300
     else:
-        raise ValueError("Argument 'field' must be one of "
-                         "{'hectomap', 'spring', 'autumn'}.")
-
-    # Get the resolution of the map
-    if type(mp) is hsp.HealSparseMap:
-        nside = mp.nside_sparse
-        mp = mp.generate_healpix_map(nest=False)
-    else:
-        nside = hp.npix2nside(len(mp))
-    reso = hp.nside2resol(nside, arcmin=True)
-    # Determine the xsize and ysize of the figure based on the NSIDE
-    scale_factor = nside // 1024
-    xsize *= scale_factor
-    ysize *= scale_factor
-    # Make a copy of the input map to avoid editing in place
-    mp = mp.copy()
+        if isinstance(field, tuple) and len(field) == 4:
+            ra_mean, dec_mean, xsize, ysize = field
+            xsize /= (reso / 60.)
+            ysize /= (reso / 60.)
+        else:
+            raise ValueError("Argument 'field' must be one of "
+                             "{'hectomap', 'spring', 'autumn'} or a "
+                             "tuple of the form (ra, dec, dra, ddec).")
 
     # Create the figure
     fig = plt.figure(figsize=(18, 5))
