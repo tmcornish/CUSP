@@ -300,30 +300,30 @@ def plot_map(mp, field, vals_unseen=None, unseen_thresh=None, title='',
     mp = mp.copy()
 
     # Approximate field centers and corresponding suitable image dimensions
+    sf = nside // 1024  # Scaling factor for HSC fields based on nside
     if field == 'hectomap':
         ra_mean = 231.71
         dec_mean = 43.34
-        xsize = 500
-        ysize = 100
+        xsize = 500 * sf
+        ysize = 100 * sf
     elif field == 'spring':
         ra_mean = 5
         dec_mean = 0
-        xsize = 1500
-        ysize = 300
+        xsize = 1500 * sf
+        ysize = 300 * sf
     elif field == 'autumn':
         ra_mean = 177.16
         dec_mean = 1.05
-        xsize = 2500
-        ysize = 300
+        xsize = 2500 * sf
+        ysize = 300 * sf
+    elif isinstance(field, tuple) and len(field) == 4:
+        ra_mean, dec_mean, xsize, ysize = field
+        xsize /= (reso / 60.)
+        ysize /= (reso / 60.)
     else:
-        if isinstance(field, tuple) and len(field) == 4:
-            ra_mean, dec_mean, xsize, ysize = field
-            xsize /= (reso / 60.)
-            ysize /= (reso / 60.)
-        else:
-            raise ValueError("Argument 'field' must be one of "
-                             "{'hectomap', 'spring', 'autumn'} or a "
-                             "tuple of the form (ra, dec, dra, ddec).")
+        raise ValueError("Argument 'field' must be one of "
+                         "{'hectomap', 'spring', 'autumn'} or a "
+                         "tuple of the form (ra, dec, dra, ddec).")
 
     # Create the figure
     fig = plt.figure(figsize=(18, 5))
