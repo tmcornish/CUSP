@@ -1,0 +1,35 @@
+[build-system]
+requires = [
+	"setuptools>=61.0"
+	]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cusp"
+version = "0.0.1"
+authors = [
+	{ name="Thomas Cornish", email="tomcornish1996@gmail.com"}
+]
+description = "General utilities for the tomographic galaxy clustering analyses"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+	"numpy",
+	"scipy",
+	"pymaster",
+	"healpy",
+	"healsparse",
+	"h5py",
+	"sacc",
+	"astropy",
+	"matplotlib"
+	]
+
+[project.urls]
+Homepage = "https://github.com/tmcornish/CUSP"
+Issues = "https://github.com/tmcornish/CUSP/issues"
