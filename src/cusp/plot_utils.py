@@ -286,6 +286,7 @@ def plot_map(mp, field, vals_unseen=None, unseen_thresh=None, title='',
     import healpy as hp
     import healsparse as hsp
     import matplotlib.pyplot as plt
+    import numpy as np
     plt.style.use(styledict)
 
     # Get the resolution of the map
@@ -304,17 +305,17 @@ def plot_map(mp, field, vals_unseen=None, unseen_thresh=None, title='',
     if field == 'hectomap':
         ra_mean = 231.71
         dec_mean = 43.34
-        xsize = 500 * sf
+        xsize = 500 * sf * np.cos(np.radians(dec_mean))
         ysize = 100 * sf
     elif field == 'spring':
         ra_mean = 5
         dec_mean = 0
-        xsize = 1500 * sf
+        xsize = 1500 * sf * np.cos(np.radians(dec_mean))
         ysize = 300 * sf
     elif field == 'autumn':
         ra_mean = 177.16
         dec_mean = 1.05
-        xsize = 2500 * sf
+        xsize = 2500 * sf * np.cos(np.radians(dec_mean))
         ysize = 300 * sf
     elif isinstance(field, tuple) and len(field) == 4:
         ra_mean, dec_mean, xsize, ysize = field
