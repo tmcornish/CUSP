@@ -5,7 +5,7 @@
 import numpy as np
 import healpy as hp
 import healsparse as hsp
-from output_utils import error_message
+from .output_utils import error_message
 
 
 def initialiseRecMap(nside_cover, nside_sparse, labels, pixels=None, ra=None,
