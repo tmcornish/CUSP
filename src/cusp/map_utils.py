@@ -189,7 +189,7 @@ def countsInPixels(ra, dec, nside_cover, nside_sparse, pix_ids,
     # Make an array of weights for counting galaxies in each pixel
     weights = np.zeros_like(px_data)
     # Give specified pixels a weight of 1
-    weights[np.in1d(px_data, pix_ids)] = 1
+    weights[np.isin(px_data, pix_ids)] = 1
 
     # Count the number of sources in each pixel (going from 0 to max(px_data))
     N = np.bincount(px_data,
